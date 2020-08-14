@@ -16,6 +16,7 @@ CUDA_VISIBLE_DEVICES=$gpu python my_tod_pretraining.py \
     --model_type=${model_type} \
     --model_name_or_path=${bert_dir} \
     --output_dir=${output_dir} \
+    --data_path=/data/_working/dialog_datasets \
     --do_train \
     --do_eval \
     --mlm \

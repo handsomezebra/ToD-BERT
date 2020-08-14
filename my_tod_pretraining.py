@@ -53,6 +53,7 @@ from utils.utils_msre2e import *
 from utils.utils_taskmaster import *
 from utils.utils_metalwoz import *
 from utils.utils_schema import *
+from utils.utils_ehealth import *
 
 from transformers import (
     WEIGHTS_NAME,
@@ -849,8 +850,8 @@ def main():
         '-ds','--dataset', 
         help='which dataset to be used.',
         required=False, 
-        #default='["multiwoz"]', 
-        default='["multiwoz", "camrest676", "woz", "smd", "frames", "msre2e", "taskmaster", "metalwoz", "schema"]', 
+        default='["ehealth"]', 
+        #default='["multiwoz", "camrest676", "woz", "smd", "frames", "msre2e", "taskmaster", "metalwoz", "schema"]', 
         type=str)
     parser.add_argument(
         '--example_type', 
@@ -1076,7 +1077,7 @@ def main():
             data_trn, data_dev, data_tst, data_meta = globals()["prepare_data_{}".format(ds_name)](args_dict)
 
             # held-out mwoz for now
-            if ds_name == "multiwoz":
+            if ds_name == "ehealth":
                 datasets[ds_name] = {"train": data_trn, "dev":data_dev, "test": data_tst, "meta":data_meta}
             else:
                 datasets[ds_name] = {"train": data_trn + data_dev + data_tst, "dev":[], "test": [], "meta":data_meta}
