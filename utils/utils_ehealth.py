@@ -34,7 +34,8 @@ def read_langs_turn(args, file_name, max_line=None, ds_name=""):
                 data_detail["dialog_history"] = list(dialog_history)
                 
                 if not args["only_last_turn"]:
-                    data.append(data_detail)
+                    if len(turn["text"]) == 1 and 20 < len(turn["text"][0]) < 200:
+                        data.append(data_detail)
                 
                 dialog_history.append(turn_sys)
                 dialog_history.append(turn_usr)
