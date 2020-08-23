@@ -12,6 +12,7 @@ from utils.utils_general import *
 from utils.utils_multiwoz import *
 from utils.utils_oos_intent import *
 from utils.utils_universal_act import *
+from utils.utils_ehealth import *
 
 # models
 from models.multi_label_classifier import *

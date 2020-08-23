@@ -59,13 +59,12 @@ def read_langs_dial(file_name, ontology, dialog_act, max_line = None, domain_act
     raise NotImplementedError
 
 
-
 def prepare_data_ehealth(args):
     ds_name = "ehealth"
     
     example_type = args["example_type"]
     max_line = args["max_line"]
-    
+
     file_trn = os.path.join(args["data_path"], "ehealth_train.json")
     file_dev = os.path.join(args["data_path"], "ehealth_dev.json")
     file_tst = os.path.join(args["data_path"], "ehealth_test.json")
@@ -79,7 +78,20 @@ def prepare_data_ehealth(args):
     print("Read {} pairs valid from {}".format(len(pair_dev), ds_name))
     print("Read {} pairs test  from {}".format(len(pair_tst), ds_name))  
     
-    meta_data = {"num_labels":0}
+    if args["task_name"] == "sysact":
+        act_set = set()
+        for pair in [pair_tst, pair_dev, pair_trn]:
+            for p in pair:
+                if type(p["sys_act"]) == list:
+                    for sysact in p["sys_act"]:
+                        act_set.add(sysact)
+                else:
+                    act_set.add(p["sys_act"])
+        
+        sysact_lookup = {sysact:i for i, sysact in enumerate(act_set)}
+        meta_data = {"sysact":sysact_lookup, "num_labels":len(act_set)}
+    else:
+        meta_data = {"num_labels":0}
 
     return pair_trn, pair_dev, pair_tst, meta_data
 
