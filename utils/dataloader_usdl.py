@@ -47,7 +47,7 @@ class Dataset_usdl(torch.utils.data.Dataset):
         return self.num_total_seqs
     
     def concat_dh_sys_usr(self, dialog_history, sys, usr):
-        return dialog_history + " {} ".format(self.sys_token) + sys + " {} ".format(self.usr_token) + usr
+        return dialog_history + " %s %s %s %s %s" % (self.sep_token, self.sys_token, sys, self.usr_token, usr)
 
     def preprocess(self, sequence):
         """Converts words to ids."""

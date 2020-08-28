@@ -34,11 +34,13 @@ def read_langs_turn(args, file_name, max_line=None, ds_name=""):
                 data_detail["dialog_history"] = list(dialog_history)
                 
                 if not args["only_last_turn"]:
-                    if len(turn["text"]) == 1 and 20 < len(turn["text"][0]) < 200:
+                    if 5 < len(turn_usr) < 200 and 5 < len(turn_sys) < 200:
                         data.append(data_detail)
                 
                 dialog_history.append(turn_sys)
                 dialog_history.append(turn_usr)
+
+                dialog_history = dialog_history[:10]
                 
             else:
                 turn_sys = " ".join(turn["text"]).lower().strip()
@@ -65,9 +67,9 @@ def prepare_data_ehealth(args):
     example_type = args["example_type"]
     max_line = args["max_line"]
 
-    file_trn = os.path.join(args["data_path"], "ehealth_train.json")
-    file_dev = os.path.join(args["data_path"], "ehealth_dev.json")
-    file_tst = os.path.join(args["data_path"], "ehealth_test.json")
+    file_trn = os.path.join(args["data_path"], "train.json")
+    file_dev = os.path.join(args["data_path"], "dev.json")
+    file_tst = os.path.join(args["data_path"], "test.json")
 
     _example_type = "dial" if "dial" in example_type else example_type
     pair_trn = globals()["read_langs_{}".format(_example_type)](args, file_trn, max_line, ds_name)

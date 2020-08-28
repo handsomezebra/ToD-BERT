@@ -3,8 +3,9 @@ CUDA_VISIBLE_DEVICES=0 python my_tod_pretraining.py \
     --task=usdl \
     --model_type=bert \
     --model_name_or_path=bert-base-uncased \
-    --output_dir=save/pretrain/bert-joint \
-    --data_path=/data/_working/dialog_datasets \
+    --dataset=[\"ehealth\"] \
+    --data_path=/data/_working/ehealth_dialog/data \
+    --output_dir=save/pretrain/ehealth-bert-joint \
     --do_train \
     --do_eval \
     --mlm \
@@ -13,4 +14,4 @@ CUDA_VISIBLE_DEVICES=0 python my_tod_pretraining.py \
     --save_steps=10000 --logging_steps=1000 \
     --per_gpu_train_batch_size=8 --per_gpu_eval_batch_size=8 \
     --add_rs_loss \
-    --patience=3
+    --patience=5

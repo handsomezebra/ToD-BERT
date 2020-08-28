@@ -64,7 +64,7 @@ class Dataset_dm(torch.utils.data.Dataset):
         return story
     
     def concat_dh_sys_usr(self, dialog_history, sys, usr):
-        return dialog_history + " {} ".format(self.sys_token) + " {} ".format(self.sep_token) + sys + " {} ".format(self.usr_token) + usr
+        return dialog_history + " %s %s %s %s %s" % (self.sep_token, self.sys_token, sys, self.usr_token, usr)
 
     def get_concat_context(self, dialog_history):
         dialog_history_str = ""
