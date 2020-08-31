@@ -1078,7 +1078,7 @@ def main():
 
             # held-out mwoz for now
             if ds_name == "ehealth":
-                datasets[ds_name] = {"train": data_trn, "dev":data_dev, "test": data_tst, "meta":data_meta}
+                datasets[ds_name] = {"train": data_trn, "dev": data_dev, "test": data_tst, "meta":data_meta}
             else:
                 datasets[ds_name] = {"train": data_trn + data_dev + data_tst, "dev":[], "test": [], "meta":data_meta}
 
@@ -1133,6 +1133,24 @@ def main():
         )
         logging.getLogger("transformers.modeling_utils").setLevel(logging.WARN)  # Reduce logging
         logger.info("Evaluate the following checkpoints: %s", checkpoints)
+
+        datasets = {}
+        for ds_name in ast.literal_eval(args.dataset):
+            data_trn, data_dev, data_tst, data_meta = globals()["prepare_data_{}".format(ds_name)](args_dict)
+
+            # held-out mwoz for now
+            if ds_name == "ehealth":
+                datasets[ds_name] = {"train": data_trn, "dev": data_dev, "test": data_tst, "meta":data_meta}
+            else:
+                datasets[ds_name] = {"train": data_trn + data_dev + data_tst, "dev":[], "test": [], "meta":data_meta}
+
+        unified_meta = get_unified_meta(datasets)
+
+        args.eval_batch_size = args.per_gpu_eval_batch_size * max(1, args.n_gpu)
+
+        args_dict = vars(args)
+        args_dict["eval_batch_size"] = args.eval_batch_size
+        dev_loader = get_loader(args_dict, "dev", tokenizer, datasets, unified_meta, "dev")
         for checkpoint in checkpoints:
             global_step = checkpoint.split("-")[-1] if len(checkpoints) > 1 else ""
             prefix = checkpoint.split("/")[-1] if checkpoint.find("checkpoint") != -1 else ""
