@@ -5,7 +5,7 @@ CUDA_VISIBLE_DEVICES=0 python my_tod_pretraining.py \
     --model_name_or_path=bert-base-uncased \
     --dataset=[\"ehealth\"] \
     --data_path=/data/_working/ehealth_dialog/data \
-    --output_dir=save/pretrain/ehealth-bert-joint \
+    --output_dir=save/pretrain/ehealth-bert-joint-new \
     --do_train \
     --do_eval \
     --mlm \

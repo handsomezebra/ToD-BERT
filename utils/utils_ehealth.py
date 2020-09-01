@@ -13,6 +13,9 @@ def read_langs_turn(args, file_name, max_line=None, ds_name=""):
     
     with open(file_name) as f:
         dials = json.load(f)
+
+
+    response_candidates = set()
         
     cnt_lin = 1
     for dial_dict in dials:
@@ -40,8 +43,9 @@ def read_langs_turn(args, file_name, max_line=None, ds_name=""):
                 dialog_history.append(turn_sys)
                 dialog_history.append(turn_usr)
 
-                dialog_history = dialog_history[:10]
-                
+                dialog_history = dialog_history[-10:]
+                if len(turn_sys) > 0:
+                    response_candidates.add(turn_sys)
             else:
                 turn_sys = " ".join(turn["text"]).lower().strip()
         
@@ -52,7 +56,7 @@ def read_langs_turn(args, file_name, max_line=None, ds_name=""):
         if(max_line and cnt_lin >= max_line):
             break
 
-    return data
+    return data, response_candidates
 
 
 def read_langs_dial(file_name, ontology, dialog_act, max_line = None, domain_act_flag=False):
@@ -72,9 +76,9 @@ def prepare_data_ehealth(args):
     file_tst = os.path.join(args["data_path"], "test.json")
 
     _example_type = "dial" if "dial" in example_type else example_type
-    pair_trn = globals()["read_langs_{}".format(_example_type)](args, file_trn, max_line, ds_name)
-    pair_dev = globals()["read_langs_{}".format(_example_type)](args, file_dev, max_line, ds_name)
-    pair_tst = globals()["read_langs_{}".format(_example_type)](args, file_tst, max_line, ds_name)
+    pair_trn, resp_cand_trn = globals()["read_langs_{}".format(_example_type)](args, file_trn, max_line, ds_name)
+    pair_dev, resp_cand_dev = globals()["read_langs_{}".format(_example_type)](args, file_dev, max_line, ds_name)
+    pair_tst, resp_cand_tst = globals()["read_langs_{}".format(_example_type)](args, file_tst, max_line, ds_name)
 
     print("Read {} pairs train from {}".format(len(pair_trn), ds_name))
     print("Read {} pairs valid from {}".format(len(pair_dev), ds_name))
@@ -92,6 +96,11 @@ def prepare_data_ehealth(args):
         
         sysact_lookup = {sysact:i for i, sysact in enumerate(act_set)}
         meta_data = {"sysact":sysact_lookup, "num_labels":len(act_set)}
+    elif args["task_name"] == "rs":
+        print("resp_cand_trn", len(resp_cand_trn))
+        print("resp_cand_dev", len(resp_cand_dev))
+        print("resp_cand_tst", len(resp_cand_tst))
+        meta_data = {"num_labels":0, "resp_cand_trn": resp_cand_trn}
     else:
         meta_data = {"num_labels":0}
 
